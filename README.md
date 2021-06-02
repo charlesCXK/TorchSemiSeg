@@ -39,7 +39,7 @@ $ bash script.sh
 ```
 
 - The tensorboard file is saved in `log/tb/` directory.
-- In `script.sh`, you need to specify some variables, such as the path to your data dir, the path to your snopshot dir that stores checkpoints, etc.
+- In `script.sh`, you need to specify some variables, such as the path to your data dir, the path to your snapshot dir that stores checkpoints, etc.
 
 ## Citation
 
