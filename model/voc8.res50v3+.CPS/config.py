@@ -70,6 +70,9 @@ C.fix_bias = True
 C.bn_eps = 1e-5
 C.bn_momentum = 0.1
 
+C.unsup_weight = 0
+C.cps_weight = 1.5
+
 ''' Image Config '''
 C.num_classes = 21
 C.background = 0
@@ -80,9 +83,6 @@ C.image_width = 512
 C.num_train_imgs = 10582 // C.labeled_ratio
 C.num_eval_imgs = 1449
 C.num_unsup_imgs = 10582 - C.num_train_imgs     # unsupervised samples
-
-C.unsup_weight = 0
-C.cps_weight = 1.5
 
 """Train Config"""
 if os.getenv('learning_rate'):

@@ -2,44 +2,17 @@
 [CVPR 2021] Semi-Supervised Semantic Segmentation with Cross Pseudo Supervision
 - High performance, simple framework.
 
+## Supported Algorithms
+| Algorithms | Publication |
+| :-----| ----: | :----: |
+| CPS | CVPR 2021|
+
 ## Installation
+Please refer to the [Installation](./docs/installation.md) document.
 
-The code is developed using Python 3.6 with PyTorch 1.0.0. The code is developed and tested using 4 or 8 Tesla V100 GPUs.
+## Getting Started
+Please follow the [Getting Started](./docs/getting_started.md) document.
 
-1. **Clone this repo.**
-
-   ```shell
-   $ git clone https://github.com/charlesCXK/TorchSemiSeg.git
-   $ cd TorchSemiSeg
-   ```
-
-2. **Install dependencies.**
-
-   **(1) Create a conda environment:**
-
-   ```shell
-   $ conda env create -f semiseg.yaml
-   $ conda activate semiseg
-   ```
-
-   **(2) Install apex 0.1(needs CUDA)**
-
-   ```shell
-   $ cd ./furnace/apex
-   $ python setup.py install --cpp_ext --cuda_ext
-   ```
-
-## Training and Inference
-
-##### Training && Inference on PASCAL VOC:
-
-```shell
-$ cd ./model/voc8.res50v3+.CPS
-$ bash script.sh
-```
-
-- The tensorboard file is saved in `log/tb/` directory.
-- In `script.sh`, you need to specify some variables, such as the path to your data dir, the path to your snapshot dir that stores checkpoints, etc.
 
 ## Citation
 
