@@ -1,0 +1,26 @@
+ninja_required_version = 1.3
+cxx = c++
+nvcc = /usr/local/cuda/bin/nvcc
+
+cflags = -DTORCH_EXTENSION_NAME=syncbn_gpu -DTORCH_API_INCLUDE_EXTENSION_H -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/torch/csrc/api/include -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/TH -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/THC -isystem /usr/local/cuda/include -isystem /home/user/miniconda/envs/ssc/include/python3.6m -D_GLIBCXX_USE_CXX11_ABI=0 -fPIC -std=c++11
+cuda_flags = -DTORCH_EXTENSION_NAME=syncbn_gpu -DTORCH_API_INCLUDE_EXTENSION_H -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/torch/csrc/api/include -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/TH -isystem /home/user/miniconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/THC -isystem /usr/local/cuda/include -isystem /home/user/miniconda/envs/ssc/include/python3.6m -D_GLIBCXX_USE_CXX11_ABI=0 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --compiler-options '-fPIC' -std=c++11
+ldflags = -shared -L/usr/local/cuda/lib64 -lcudart
+
+rule compile
+  command = $cxx -MMD -MF $out.d $cflags -c $in -o $out
+  depfile = $out.d
+  deps = gcc
+
+rule cuda_compile
+  command = $nvcc $cuda_flags -c $in -o $out
+
+rule link
+  command = $cxx $in $ldflags -o $out
+
+build operator.o: compile /mnt/batch/tasks/shared/LS_root/jobs/usscv100ws/azureml/ssseg_1602140032_3169f51a/mounts/cxk_datastore/projects/torchseg/furnace/seg_opr/sync_bn/src/gpu/operator.cpp
+build syncbn_kernel.cuda.o: cuda_compile /mnt/batch/tasks/shared/LS_root/jobs/usscv100ws/azureml/ssseg_1602140032_3169f51a/mounts/cxk_datastore/projects/torchseg/furnace/seg_opr/sync_bn/src/gpu/syncbn_kernel.cu
+
+build syncbn_gpu.so: link operator.o syncbn_kernel.cuda.o
+
+default syncbn_gpu.so
+

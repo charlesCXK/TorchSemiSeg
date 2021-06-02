@@ -1,0 +1,21 @@
+ninja_required_version = 1.3
+cxx = c++
+
+cflags = -DTORCH_EXTENSION_NAME=syncbn_cpu -DTORCH_API_INCLUDE_EXTENSION_H -isystem /anaconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include -isystem /anaconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/torch/csrc/api/include -isystem /anaconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/TH -isystem /anaconda/envs/ssc/lib/python3.6/site-packages/torch/lib/include/THC -isystem /anaconda/envs/ssc/include/python3.6m -D_GLIBCXX_USE_CXX11_ABI=0 -fPIC -std=c++11
+ldflags = -shared
+
+rule compile
+  command = $cxx -MMD -MF $out.d $cflags -c $in -o $out
+  depfile = $out.d
+  deps = gcc
+
+rule link
+  command = $cxx $in $ldflags -o $out
+
+build operator.o: compile /home/cxk/msra_container/projects/torchseg/furnace/seg_opr/sync_bn/src/cpu/operator.cpp
+build syncbn_cpu.o: compile /home/cxk/msra_container/projects/torchseg/furnace/seg_opr/sync_bn/src/cpu/syncbn_cpu.cpp
+
+build syncbn_cpu.so: link operator.o syncbn_cpu.o
+
+default syncbn_cpu.so
+
