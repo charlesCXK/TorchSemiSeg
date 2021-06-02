@@ -133,3 +133,5 @@ dmypy.json
 *.pth
 *.checkpoint
 run.sh
+log/
+__pycache__
