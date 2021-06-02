@@ -2,11 +2,6 @@
 [CVPR 2021] Semi-Supervised Semantic Segmentation with Cross Pseudo Supervision
 - High performance, simple framework.
 
-## Supported Algorithms
-| Algorithms | Publication |
-| :-----| ----: | :----: |
-| CPS | CVPR 2021|
-
 ## Installation
 Please refer to the [Installation](./docs/installation.md) document.
 
