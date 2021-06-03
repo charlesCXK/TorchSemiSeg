@@ -1,5 +1,18 @@
 ## Getting Started
 
+### Data Preparation 
+##### Download the data (VOC, Cityscapes) and pre-trained models from  [OneDrive link](https://microsoft-my.sharepoint.com/:f:/p/v-xiaokc/EqpRyGmK7_JMhTWlHWG-qrcByN_1Q16UgD7yEYDpjSL48A?e=CV0oPO): 
+
+```
+DATA/
+|-- city
+|-- pascal_voc
+|-- pytorch-weight
+|   |-- resnet50_v1c.pth
+|   |-- resnet101_v1c.pth
+```
+
+
 ### Training && Inference on PASCAL VOC:
 
 ```shell
@@ -10,7 +23,7 @@ $ bash script.sh
 - The tensorboard file is saved in `log/tb/` directory.
 - In `script.sh`, you need to specify some variables, such as the path to your data dir, the path to your snapshot dir that stores checkpoints, etc.
 
-### Different partitions
+### Different Partitions
 To try other data partitions beside 1/8, you just need to change two variables in `config.py`:
 ```python
 C.labeled_ratio = 8
