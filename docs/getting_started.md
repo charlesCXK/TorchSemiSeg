@@ -1,7 +1,7 @@
 ## Getting Started
 
 ### Data Preparation 
-##### Download the data (VOC, Cityscapes) and pre-trained models from  [OneDrive link](https://microsoft-my.sharepoint.com/:f:/p/v-xiaokc/EqpRyGmK7_JMhTWlHWG-qrcByN_1Q16UgD7yEYDpjSL48A?e=CV0oPO): 
+##### Download the data (VOC, Cityscapes) and pre-trained models from  [OneDrive link](https://pkueducn-my.sharepoint.com/:f:/g/personal/pkucxk_pku_edu_cn/EtjNKU0oVMhPkOKf9HTPlVsBIHYbACel6LSvcUeP4MXWVg?e=139icd): 
 
 ```
 DATA/

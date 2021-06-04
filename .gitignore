@@ -136,4 +136,6 @@ run.sh
 log/
 __pycache__
 output/
-exp.city/
+# exp.city/
+city4*
+city16*

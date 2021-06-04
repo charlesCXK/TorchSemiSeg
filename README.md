@@ -43,5 +43,5 @@ Please consider citing this project in your publications if it helps your resear
 #### TODO
 - [x] Dataset release
 - [x] Code for CPS + CutMix
-- [ ] Code for Cityscapes dataset
+- [x] Code for Cityscapes dataset
 - [ ] Other SOTA semi-supervised segmentation methods
