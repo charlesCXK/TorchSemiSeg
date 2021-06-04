@@ -1,7 +1,7 @@
 # TorchSemiSeg
 <br>
 
-> [[CVPR 2021] Semi-Supervised Semantic Segmentation with Cross Pseudo Supervision](https://arxiv.org/pdf/2106.01226.pdf)
+> [[CVPR 2021] Semi-Supervised Semantic Segmentation with Cross Pseudo Supervision](https://arxiv.org/abs/2106.01226)
 >
 > by [Xiaokang Chen](https://charlescxk.github.io)<sup>1</sup>, [Yuhui Yuan](https://scholar.google.com/citations?user=PzyvzksAAAAJ&hl=zh-CN)<sup>2</sup>, [Gang Zeng](https://www.cis.pku.edu.cn/info/1177/1378.htm)<sup>1</sup>, [Jingdong Wang](https://jingdongwang2017.github.io/)<sup>2</sup>.
 > 
@@ -17,7 +17,7 @@
 <img src=ReadmePic/cps.png width="600">
 
 ## News
-- **[June 3 2021] Please check our paper in [Arxiv](https://arxiv.org/pdf/2106.01226.pdf). Data and code have been released.**  
+- **[June 3 2021] Please check our paper in [Arxiv](https://arxiv.org/abs/2106.01226). Data and code have been released.**  
 
 
 ## Installation
