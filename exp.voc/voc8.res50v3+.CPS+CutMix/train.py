@@ -161,7 +161,6 @@ with Engine(custom_parser=parser) as engine:
 
     model.train()
     print('begin train')
-    saved_prototyope_epoch = None
 
     for epoch in range(engine.state.epoch, config.nepochs):
         if engine.distributed:

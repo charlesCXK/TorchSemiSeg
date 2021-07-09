@@ -1,0 +1,35 @@
+{
+    "name": "CCT",
+    "experim_name": "CCT",
+    "ramp_up": 0.1,
+    "ignore_index": 255,
+
+    "model":{
+        "sup_loss": "CE",
+        "un_loss": "MSE",
+
+        "softmax_temp": 1,
+        "aux_constraint": false,
+        "aux_constraint_w": 1,
+        "confidence_masking": false,
+        "confidence_th": 0.5,
+
+        "drop": 2,
+        "drop_rate": 0.5,
+        "spatial": true,
+
+        "cutout": 2,
+        "erase": 0.4,
+
+        "vat": 2,
+        "xi": 1e-6,
+        "eps": 2.0,
+
+        "context_masking": 2,
+        "object_masking": 2,
+        "feature_drop": 2,
+
+        "feature_noise": 2,
+        "uniform_range": 0.3
+    }
+}

@@ -17,6 +17,7 @@
 <img src=ReadmePic/cps.png width="600">
 
 ## News
+- **[July 9  2021] We have released some SOTA methods (Mean Teacher, CCT, GCT).**  
 - **[June 3 2021] Please check our paper in [Arxiv](https://arxiv.org/abs/2106.01226). Data and code have been released.**  
 
 
@@ -44,4 +45,4 @@ Please consider citing this project in your publications if it helps your resear
 - [x] Dataset release
 - [x] Code for CPS + CutMix
 - [x] Code for Cityscapes dataset
-- [ ] Other SOTA semi-supervised segmentation methods
+- [x] Other SOTA semi-supervised segmentation methods

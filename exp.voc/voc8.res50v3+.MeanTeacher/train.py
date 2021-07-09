@@ -77,7 +77,6 @@ with Engine(custom_parser=parser) as engine:
     if engine.distributed:
         BatchNorm2d = SyncBatchNorm
 
-    # define and init the model
     model = Network(config.num_classes, criterion=criterion,
                     pretrained_model=config.pretrained_model,
                     norm_layer=BatchNorm2d)
@@ -88,12 +87,11 @@ with Engine(custom_parser=parser) as engine:
                 BatchNorm2d, config.bn_eps, config.bn_momentum,
                 mode='fan_in', nonlinearity='relu')
 
-    # define the learning rate
+    # group weight and config optimizer
     base_lr = config.lr
     if engine.distributed:
         base_lr = config.lr * engine.world_size
 
-    # define the two optimizers
     params_list_l = []
     params_list_l = group_weight(params_list_l, model.branch1.backbone,
                                BatchNorm2d, base_lr)
@@ -117,6 +115,8 @@ with Engine(custom_parser=parser) as engine:
                                 lr=base_lr,
                                 momentum=config.momentum,
                                 weight_decay=config.weight_decay)
+
+
 
     # config lr policy
     total_iteration = config.nepochs * config.niters_per_epoch
@@ -155,8 +155,8 @@ with Engine(custom_parser=parser) as engine:
         unsupervised_dataloader = iter(unsupervised_train_loader)
 
         sum_loss_sup = 0
-        sum_loss_sup_r = 0
-        sum_cps = 0
+        sum_loss_sup_t = 0
+        sum_csst = 0
 
         ''' supervised part '''
         for idx in pbar:
@@ -174,79 +174,69 @@ with Engine(custom_parser=parser) as engine:
             unsup_imgs = unsup_imgs.cuda(non_blocking=True)
             gts = gts.cuda(non_blocking=True)
 
-
-            b, c, h, w = imgs.shape
-            _, pred_sup_l = model(imgs, step=1)
-            _, pred_unsup_l = model(unsup_imgs, step=1)
-            _, pred_sup_r = model(imgs, step=2)
-            _, pred_unsup_r = model(unsup_imgs, step=2)
-
-            ### cps loss ###
-            pred_l = torch.cat([pred_sup_l, pred_unsup_l], dim=0)
-            pred_r = torch.cat([pred_sup_r, pred_unsup_r], dim=0)
-            _, max_l = torch.max(pred_l, dim=1)
-            _, max_r = torch.max(pred_r, dim=1)
-            max_l = max_l.long()
-            max_r = max_r.long()
-            cps_loss = criterion(pred_l, max_r) + criterion(pred_r, max_l)
-            dist.all_reduce(cps_loss, dist.ReduceOp.SUM)
-            cps_loss = cps_loss / engine.world_size
-            cps_loss = cps_loss * config.cps_weight
-
-            ### standard cross entropy loss ###
-            loss_sup = criterion(pred_sup_l, gts)
-            dist.all_reduce(loss_sup, dist.ReduceOp.SUM)
-            loss_sup = loss_sup / engine.world_size
-
-            loss_sup_r = criterion(pred_sup_r, gts)
-            dist.all_reduce(loss_sup_r, dist.ReduceOp.SUM)
-            loss_sup_r = loss_sup_r / engine.world_size
-
-            unlabeled_loss = False
+            cat_imgs = torch.cat([imgs, unsup_imgs], dim=0)
 
             current_idx = epoch * config.niters_per_epoch + idx
+            s_sup_pred, t_sup_pred = model(imgs, step=1, cur_iter=current_idx)
+            s_unsup_pred, t_unsup_pred = model(unsup_imgs, step=2, cur_iter=current_idx)
+            s_pred = torch.cat([s_sup_pred, s_unsup_pred], dim=0)
+            t_pred = torch.cat([t_sup_pred, t_unsup_pred], dim=0)
+
+            softmax_pred_s = F.softmax(s_pred, 1)
+            softmax_pred_t = F.softmax(t_pred, 1)
+
+            ### Mean Teacher loss ###
+            csst_loss = criterion_csst(softmax_pred_s, softmax_pred_t.detach())
+            dist.all_reduce(csst_loss, dist.ReduceOp.SUM)
+            csst_loss = csst_loss / engine.world_size
+            csst_loss = csst_loss * config.unsup_weight
+
+            ### Supervised loss For Student ###
+            loss_sup = criterion(s_sup_pred, gts)
+            dist.all_reduce(loss_sup, dist.ReduceOp.SUM)
+            loss_sup = loss_sup / engine.world_size
+            
+            ### Supervised loss For Teracher. No Backward ###
+            loss_sup_t = criterion(t_sup_pred, gts)
+            dist.all_reduce(loss_sup_t, dist.ReduceOp.SUM)
+            loss_sup_t = loss_sup_t / engine.world_size
+
+            unlabeled_loss = True
+
             lr = lr_policy.get_lr(current_idx)
 
-            # reset the learning rate
             optimizer_l.param_groups[0]['lr'] = lr
             optimizer_l.param_groups[1]['lr'] = lr
             for i in range(2, len(optimizer_l.param_groups)):
                 optimizer_l.param_groups[i]['lr'] = lr
-            optimizer_r.param_groups[0]['lr'] = lr
-            optimizer_r.param_groups[1]['lr'] = lr
-            for i in range(2, len(optimizer_r.param_groups)):
-                optimizer_r.param_groups[i]['lr'] = lr
 
-            loss = loss_sup + loss_sup_r + cps_loss
+            loss = loss_sup + csst_loss
             loss.backward()
-            optimizer_l.step()
-            optimizer_r.step()
+            optimizer_l.step()      # only the student model need to be updated by SGD.
 
             print_str = 'Epoch{}/{}'.format(epoch, config.nepochs) \
                         + ' Iter{}/{}:'.format(idx + 1, config.niters_per_epoch) \
                         + ' lr=%.2e' % lr \
                         + ' loss_sup=%.2f' % loss_sup.item() \
-                        + ' loss_sup_r=%.2f' % loss_sup_r.item() \
-                            + ' loss_cps=%.4f' % cps_loss.item()
+                        + ' loss_sup_t=%.2f' % loss_sup_t.item() \
+                        + ' loss_csst=%.4f' % csst_loss.item()
 
             sum_loss_sup += loss_sup.item()
-            sum_loss_sup_r += loss_sup_r.item()
-            sum_cps += cps_loss.item()
+            sum_loss_sup_t += loss_sup_t.item()
+            sum_csst += csst_loss.item()
             pbar.set_description(print_str, refresh=False)
 
             end_time = time.time()
 
-
         if engine.distributed and (engine.local_rank == 0):
             logger.add_scalar('train_loss_sup', sum_loss_sup / len(pbar), epoch)
-            logger.add_scalar('train_loss_sup_r', sum_loss_sup_r / len(pbar), epoch)
-            logger.add_scalar('train_loss_cps', sum_cps / len(pbar), epoch)
+            logger.add_scalar('train_loss_sup_t', sum_loss_sup_t / len(pbar), epoch)
+            logger.add_scalar('train_loss_csst', sum_csst / len(pbar), epoch)
 
         if azure and engine.local_rank == 0:
             run.log(name='Supervised Training Loss', value=sum_loss_sup / len(pbar))
-            run.log(name='Supervised Training Loss right', value=sum_loss_sup_r / len(pbar))
-            run.log(name='Supervised Training Loss CPS', value=sum_cps / len(pbar))
-
+            run.log(name='Supervised Training Loss Teacher', value=sum_loss_sup_t / len(pbar))
+            run.log(name='Supervised Training Loss CSST', value=sum_csst / len(pbar))
 
         if (epoch > config.nepochs // 2) and (epoch % config.snapshot_iter == 0) or (epoch == config.nepochs - 1):
             if engine.distributed and (engine.local_rank == 0):
