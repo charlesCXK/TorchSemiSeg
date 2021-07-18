@@ -22,6 +22,7 @@ $ bash script.sh
 
 - The tensorboard file is saved in `log/tb/` directory.
 - In `script.sh`, you need to specify some variables, such as the path to your data dir, the path to your snapshot dir that stores checkpoints, etc.
+- We have released the [training log](https://pkueducn-my.sharepoint.com/:t:/g/personal/pkucxk_pku_edu_cn/ERl1pm99zhFIvIIB8y82WiIB13AQ9Hd8FyrJQ5v3fpP0vg?e=Nd0f1M) and [pretrained model](https://pkueducn-my.sharepoint.com/:u:/g/personal/pkucxk_pku_edu_cn/ESx6vF1dapJGkbsLWHnHSakBdFOkooQcIFeDpCRTVJS8Iw?e=zMCvhj) for this experiment on OneDrive.
 
 ### Different Partitions
 To try other data partitions beside 1/8, you just need to change two variables in `config.py`:
