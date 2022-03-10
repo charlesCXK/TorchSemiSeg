@@ -1,6 +1,12 @@
 # TorchSemiSeg
 <br>
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-semantic-segmentation-with-3/semi-supervised-semantic-segmentation-on-2)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-2?p=semi-supervised-semantic-segmentation-with-3)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-semantic-segmentation-with-3/semi-supervised-semantic-segmentation-on-1)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-1?p=semi-supervised-semantic-segmentation-with-3)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-semantic-segmentation-with-3/semi-supervised-semantic-segmentation-on-8)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-8?p=semi-supervised-semantic-segmentation-with-3)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-semantic-segmentation-with-3/semi-supervised-semantic-segmentation-on-4)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-4?p=semi-supervised-semantic-segmentation-with-3)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-semantic-segmentation-with-3/semi-supervised-semantic-segmentation-on-9)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-9?p=semi-supervised-semantic-segmentation-with-3)
+
 > [[CVPR 2021] Semi-Supervised Semantic Segmentation with Cross Pseudo Supervision](https://arxiv.org/abs/2106.01226)
 >
 > by [Xiaokang Chen](https://charlescxk.github.io)<sup>1</sup>, [Yuhui Yuan](https://scholar.google.com/citations?user=PzyvzksAAAAJ&hl=zh-CN)<sup>2</sup>, [Gang Zeng](https://www.cis.pku.edu.cn/info/1177/1378.htm)<sup>1</sup>, [Jingdong Wang](https://jingdongwang2017.github.io/)<sup>2</sup>.
